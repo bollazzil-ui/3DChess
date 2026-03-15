@@ -45,6 +45,19 @@ export const BOARD_THEMES = {
     borderRoughness: 0.4,
     boardModel: null,
   },
+  football: {
+    name: 'Football Pitch',
+    lightSquare: 0x4caf50,   // lighter grass
+    darkSquare: 0x388e3c,    // darker grass stripe
+    borderColor: 0x2e7d32,   // deep green border
+    borderMetalness: 0.0,
+    borderRoughness: 0.95,
+    boardModel: null,
+    decoration: 'football',  // triggers pitch line drawing
+    squareRoughness: 0.9,    // matte grass look
+    squareMetalness: 0.0,
+    labelColor: '#ffffff',
+  },
   // Example custom model theme:
   // custom: {
   //   name: 'Custom',
