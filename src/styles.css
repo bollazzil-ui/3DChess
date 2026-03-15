@@ -10,19 +10,136 @@ html, body {
   overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #1a1a2e;
+  color: #fff;
 }
 
 #app {
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
 }
 
-#chess-canvas {
+/* ─── Board ──────────────────────────────────────────────── */
+
+#board-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.board-wrapper {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  grid-template-rows: 1fr 24px;
+  gap: 0;
+  user-select: none;
+}
+
+.rank-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding-right: 4px;
+}
+
+.file-labels {
+  grid-column: 2;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.board-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: min(70vh, 70vw, 560px);
+  height: min(70vh, 70vw, 560px);
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 20px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(255,255,255,0.05);
+}
+
+.board-overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  display: block;
+  pointer-events: none;
+  z-index: 5;
+  display: none;
 }
+
+/* ─── Squares ────────────────────────────────────────────── */
+
+.square {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: filter 0.1s;
+}
+
+.square:hover {
+  filter: brightness(1.08);
+}
+
+/* ─── Pieces ─────────────────────────────────────────────── */
+
+.piece {
+  position: relative;
+  z-index: 2;
+  font-size: min(8vh, 8vw, 58px);
+  line-height: 1;
+  pointer-events: none;
+  transition: transform 0.1s;
+}
+
+/* ─── Highlights ─────────────────────────────────────────── */
+
+.highlight {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 0;
+}
+
+.highlight-selected {
+  z-index: 1;
+}
+
+.highlight-legalMove,
+.highlight-capture {
+  z-index: 3;
+}
+
+.highlight-check {
+  z-index: 1;
+}
+
+.highlight-lastMove {
+  z-index: 0;
+}
+
+/* ─── UI Overlay ─────────────────────────────────────────── */
 
 #ui-overlay {
   position: absolute;
@@ -31,6 +148,7 @@ html, body {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 10;
 }
 
 #ui-overlay > * {
@@ -47,8 +165,7 @@ html, body {
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
-  color: #fff;
+  background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%);
 }
 
 .game-title {
@@ -80,10 +197,10 @@ html, body {
 .side-panel {
   position: absolute;
   top: 60px;
-  width: 220px;
+  width: 200px;
   max-height: calc(100% - 120px);
   padding: 12px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(10px);
   border-radius: 8px;
   color: #ddd;
@@ -95,13 +212,13 @@ html, body {
 .side-panel.right { right: 12px; }
 
 .panel-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 10px;
   color: #fff;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
   padding-bottom: 6px;
 }
 
@@ -149,7 +266,7 @@ html, body {
 }
 
 .move-white, .move-black {
-  min-width: 60px;
+  min-width: 55px;
 }
 
 /* Bottom bar */
@@ -161,37 +278,37 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 12px 20px;
-  background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+  background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 100%);
 }
 
 .btn {
-  padding: 8px 18px;
-  border: 1px solid rgba(255,255,255,0.3);
+  padding: 8px 16px;
+  border: 1px solid rgba(255,255,255,0.25);
   border-radius: 6px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.08);
   color: #fff;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .btn:hover {
-  background: rgba(255,255,255,0.2);
-  border-color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.45);
 }
 
 .btn.primary {
-  background: rgba(76, 175, 80, 0.4);
-  border-color: rgba(76, 175, 80, 0.6);
+  background: rgba(76, 175, 80, 0.35);
+  border-color: rgba(76, 175, 80, 0.55);
 }
 
 .btn.primary:hover {
-  background: rgba(76, 175, 80, 0.6);
+  background: rgba(76, 175, 80, 0.55);
 }
 
 .btn.danger {
@@ -209,13 +326,12 @@ html, body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.88);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 16px;
   padding: 40px 60px;
   text-align: center;
-  color: #fff;
   z-index: 100;
 }
 
@@ -240,13 +356,12 @@ html, body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.92);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgba(255,255,255,0.25);
   border-radius: 12px;
   padding: 24px;
   text-align: center;
-  color: #fff;
   z-index: 200;
 }
 
@@ -268,16 +383,16 @@ html, body {
   align-items: center;
   justify-content: center;
   font-size: 36px;
-  background: rgba(255,255,255,0.1);
-  border: 2px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.25);
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
 .promotion-option:hover {
-  background: rgba(255,255,255,0.25);
-  border-color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.55);
   transform: scale(1.1);
 }
 
@@ -289,12 +404,11 @@ html, body {
   transform: translate(-50%, -50%);
   background: rgba(10, 10, 30, 0.95);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 16px;
   padding: 30px 40px;
-  color: #fff;
   z-index: 150;
-  min-width: 360px;
+  min-width: 340px;
 }
 
 .settings-panel h2 {
@@ -308,7 +422,7 @@ html, body {
 
 .setting-group label {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: #aaa;
@@ -319,8 +433,8 @@ html, body {
 .setting-group input {
   width: 100%;
   padding: 8px 12px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 6px;
   color: #fff;
   font-size: 14px;
@@ -347,11 +461,11 @@ html, body {
   backdrop-filter: blur(10px);
   border-radius: 12px;
   padding: 16px 28px;
-  color: #fff;
   font-size: 15px;
   display: flex;
   align-items: center;
   gap: 12px;
+  z-index: 50;
 }
 
 .ai-thinking .spinner {
@@ -367,16 +481,24 @@ html, body {
   to { transform: rotate(360deg); }
 }
 
-/* Scrollbar styling */
-.side-panel::-webkit-scrollbar {
-  width: 4px;
+/* Scrollbar */
+.side-panel::-webkit-scrollbar { width: 4px; }
+.side-panel::-webkit-scrollbar-track { background: transparent; }
+.side-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+
+/* ─── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .side-panel { display: none; }
 }
 
-.side-panel::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.side-panel::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
-  border-radius: 2px;
+@media (max-width: 600px) {
+  .board-grid {
+    width: min(90vw, 90vh);
+    height: min(90vw, 90vh);
+  }
+  .piece { font-size: min(10vw, 10vh); }
+  .top-bar { padding: 8px 12px; }
+  .bottom-bar { padding: 8px 12px; gap: 6px; }
+  .btn { padding: 6px 10px; font-size: 11px; }
 }

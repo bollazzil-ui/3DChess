@@ -35,7 +35,7 @@ export class UI {
     bar.className = 'top-bar';
 
     bar.innerHTML = `
-      <div class="game-title">3D Chess</div>
+      <div class="game-title">Chess</div>
       <div class="turn-indicator">
         <div class="turn-color-dot white" id="turn-dot"></div>
         <span id="turn-text">White's Turn</span>

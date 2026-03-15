@@ -3,152 +3,102 @@
  *
  * To add a custom theme:
  * 1. Add a new entry to BOARD_THEMES or PIECE_THEMES
- * 2. For custom 3D models, set pieceModels to a map of piece type -> GLTF/GLB URL
- *    e.g. { k: '/models/king.glb', q: '/models/queen.glb', ... }
- * 3. For custom board models, set boardModel to a GLTF/GLB URL
+ * 2. For custom piece images, set pieceImages to a map of
+ *    "wk" | "wq" | "bk" | ... -> image URL
  */
 
 export const BOARD_THEMES = {
   classic: {
     name: 'Classic',
-    lightSquare: 0xf0d9b5,
-    darkSquare: 0xb58863,
-    borderColor: 0x5c3a1e,
-    borderMetalness: 0.3,
-    borderRoughness: 0.6,
-    boardModel: null, // Use procedural board
+    lightSquare: '#f0d9b5',
+    darkSquare: '#b58863',
+    border: '#5c3a1e',
+    labelColor: '#8b6f47',
   },
   marble: {
     name: 'Marble',
-    lightSquare: 0xe8e0d4,
-    darkSquare: 0x4a6741,
-    borderColor: 0x2a2a2a,
-    borderMetalness: 0.5,
-    borderRoughness: 0.3,
-    boardModel: null,
+    lightSquare: '#e8e0d4',
+    darkSquare: '#4a6741',
+    border: '#2a2a2a',
+    labelColor: '#888',
   },
   modern: {
     name: 'Modern',
-    lightSquare: 0xeeeeee,
-    darkSquare: 0x333333,
-    borderColor: 0x111111,
-    borderMetalness: 0.8,
-    borderRoughness: 0.2,
-    boardModel: null,
+    lightSquare: '#eeeeee',
+    darkSquare: '#333333',
+    border: '#111111',
+    labelColor: '#666',
   },
   blue: {
     name: 'Ocean Blue',
-    lightSquare: 0xdce7f2,
-    darkSquare: 0x4a7ab5,
-    borderColor: 0x1a3550,
-    borderMetalness: 0.4,
-    borderRoughness: 0.4,
-    boardModel: null,
+    lightSquare: '#dce7f2',
+    darkSquare: '#4a7ab5',
+    border: '#1a3550',
+    labelColor: '#6090b8',
   },
   football: {
     name: 'Football Pitch',
-    lightSquare: 0x4caf50,   // lighter grass
-    darkSquare: 0x388e3c,    // darker grass stripe
-    borderColor: 0x2e7d32,   // deep green border
-    borderMetalness: 0.0,
-    borderRoughness: 0.95,
-    boardModel: null,
-    decoration: 'football',  // triggers pitch line drawing
-    squareRoughness: 0.9,    // matte grass look
-    squareMetalness: 0.0,
-    labelColor: '#ffffff',
+    lightSquare: '#5cb860',
+    darkSquare: '#45a049',
+    border: '#2e7d32',
+    labelColor: '#a5d6a7',
+    decoration: 'football',
   },
-  // Example custom model theme:
-  // custom: {
-  //   name: 'Custom',
-  //   lightSquare: 0xffffff,
-  //   darkSquare: 0x000000,
-  //   borderColor: 0x444444,
-  //   boardModel: '/models/custom-board.glb',
-  // },
 };
 
 export const PIECE_THEMES = {
   classic: {
     name: 'Classic',
-    whiteMaterial: {
-      color: 0xfafafa,
-      roughness: 0.35,
-      metalness: 0.1,
-      envMapIntensity: 0.5,
-    },
-    blackMaterial: {
-      color: 0x222222,
-      roughness: 0.3,
-      metalness: 0.15,
-      envMapIntensity: 0.6,
-    },
-    pieceModels: null, // Use procedural pieces
+    whiteColor: '#ffffff',
+    whiteStroke: '#333333',
+    blackColor: '#333333',
+    blackStroke: '#000000',
+    pieceImages: null,
   },
   wood: {
     name: 'Wood',
-    whiteMaterial: {
-      color: 0xdeb887,
-      roughness: 0.6,
-      metalness: 0.0,
-    },
-    blackMaterial: {
-      color: 0x4a2810,
-      roughness: 0.55,
-      metalness: 0.0,
-    },
-    pieceModels: null,
+    whiteColor: '#deb887',
+    whiteStroke: '#8b6914',
+    blackColor: '#4a2810',
+    blackStroke: '#1a0a00',
+    pieceImages: null,
   },
   metal: {
     name: 'Metal',
-    whiteMaterial: {
-      color: 0xd4d4d4,
-      roughness: 0.15,
-      metalness: 0.9,
-    },
-    blackMaterial: {
-      color: 0x2a2a2a,
-      roughness: 0.2,
-      metalness: 0.85,
-    },
-    pieceModels: null,
+    whiteColor: '#d4d4d4',
+    whiteStroke: '#888888',
+    blackColor: '#444444',
+    blackStroke: '#111111',
+    pieceImages: null,
   },
   jade: {
     name: 'Jade & Ivory',
-    whiteMaterial: {
-      color: 0xfffff0,
-      roughness: 0.4,
-      metalness: 0.05,
-    },
-    blackMaterial: {
-      color: 0x2d8b57,
-      roughness: 0.25,
-      metalness: 0.1,
-    },
-    pieceModels: null,
+    whiteColor: '#fffff0',
+    whiteStroke: '#b0b090',
+    blackColor: '#2d8b57',
+    blackStroke: '#0a4a2a',
+    pieceImages: null,
   },
-  // Example with custom models:
+  // Example with custom images:
   // custom: {
   //   name: 'Custom Set',
-  //   whiteMaterial: { color: 0xffffff, roughness: 0.3, metalness: 0.1 },
-  //   blackMaterial: { color: 0x111111, roughness: 0.3, metalness: 0.1 },
-  //   pieceModels: {
-  //     k: '/models/pieces/king.glb',
-  //     q: '/models/pieces/queen.glb',
-  //     r: '/models/pieces/rook.glb',
-  //     b: '/models/pieces/bishop.glb',
-  //     n: '/models/pieces/knight.glb',
-  //     p: '/models/pieces/pawn.glb',
+  //   whiteColor: '#fff',
+  //   whiteStroke: '#333',
+  //   blackColor: '#333',
+  //   blackStroke: '#000',
+  //   pieceImages: {
+  //     wk: '/images/wk.svg', wq: '/images/wq.svg', ...
+  //     bk: '/images/bk.svg', bq: '/images/bq.svg', ...
   //   },
   // },
 };
 
 export const HIGHLIGHT_COLORS = {
-  selected: 0x44ff44,
-  legalMove: 0x44aaff,
-  capture: 0xff4444,
-  lastMove: 0xffff44,
-  check: 0xff0000,
+  selected: 'rgba(68, 255, 68, 0.45)',
+  legalMove: 'radial-gradient(circle, rgba(0,0,0,0.18) 25%, transparent 25%)',
+  capture: 'radial-gradient(circle, transparent 50%, rgba(0,0,0,0.18) 50%)',
+  lastMove: 'rgba(255, 255, 100, 0.35)',
+  check: 'radial-gradient(ellipse at center, rgba(255,0,0,0.6) 0%, rgba(255,0,0,0.2) 60%, transparent 80%)',
 };
 
 export const DEFAULT_CONFIG = {
