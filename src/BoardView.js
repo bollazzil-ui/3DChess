@@ -1,4 +1,5 @@
 import { BOARD_THEMES, PIECE_THEMES, HIGHLIGHT_COLORS } from './themes.js';
+import { CaptureAnimation } from './CaptureAnimation.js';
 
 const PIECE_UNICODE = {
   w: { k: '\u2654', q: '\u2655', r: '\u2656', b: '\u2657', n: '\u2658', p: '\u2659' },
@@ -26,6 +27,8 @@ export class BoardView {
     // Callbacks
     this.onMoveMade = null;
     this.onPromotionNeeded = null;
+
+    this.captureAnim = new CaptureAnimation();
 
     this.build();
   }
@@ -328,6 +331,12 @@ export class BoardView {
 
     const result = this.game.makeMove(from, to, promotion);
     if (result) {
+      // Play cinematic animation when a queen is captured
+      if (result.captured === 'q') {
+        this.syncPieces();
+        await this.captureAnim.play(result.piece, result.color);
+      }
+
       this.syncPieces();
       this.showLastMoveHighlight();
       this.showCheckHighlight();
